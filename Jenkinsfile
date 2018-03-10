@@ -92,15 +92,13 @@ pipeline {
             steps {
                 script {
                     def bcPrefix=appName;
-                    def bcSuffix='_dev'
+                    def bcSuffix='-dev'; 
 
                     if (isPullRequest){
                         buildEnvName = "pr-${pullRequestNumber}"
-                        resourceBuildNameSuffix = "_pr_${pullRequestNumber}";
-                        bcSuffix="_pr_${pullRequestNumber}";
+                        bcSuffix="-pr-${pullRequestNumber}";
                     }else{
                         buildEnvName = 'dev'
-                        resourceBuildNameSuffix = "-DEV";
                     }
 
                     openshift.withCluster() {
