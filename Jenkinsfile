@@ -22,6 +22,10 @@ def killOldBuilds() {
   }
 }
 
+def sayHello() {
+    echo "Hello"
+}
+
 pipeline {
     // The options directive is for configuration that applies to the whole job.
     options {
@@ -35,6 +39,7 @@ pipeline {
             agent any
             steps {
               script {
+                sayHello
                 killOldBuilds();
               }
               checkout scm
@@ -172,9 +177,36 @@ pipeline {
         } // end stage
         stage('deploy - DEV') {
             agent any
-            when { expression { doDeploy == true} }
             steps {
                 echo 'Deploying'
+                script {
+                    def dcPrefix=appName;
+                    def dcSuffix='-dev';
+                    def envName="dev"
+
+                    if (isPullRequest){
+                        envName = "pr-${pullRequestNumber}"
+                        dcSuffix="-pr-${pullRequestNumber}";
+                    }
+
+                    def dcSelector=['app-name':appName, 'env-name':buildEnvName];
+
+                    openshift.withCluster() {
+                        //create or patch BCs
+                        def models = openshift.process("-f", "openshift.dc.json",
+                                "-p", "APP_NAME=${appName}",
+                                "-p", "ENV_NAME=${envName}",
+                                "-p", "NAME_PREFIX=${dcPrefix}",
+                                "-p", "NAME_SUFFIX=${dcSuffix}")
+                        echo "The template will create/update ${models.size()} objects"
+                        openshift.apply(models);
+
+                        def buildSelector = openshift.selector( 'dc', dcSelector);
+
+                        //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
+                    }
+
+                } //end script
             }
         }
         stage('testing') {
