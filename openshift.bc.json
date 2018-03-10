@@ -7,6 +7,20 @@
     },
     "parameters": [
       {
+        "name": "APP_NAME",
+        "displayName": "Name",
+        "description": "The name assigned to all of the objects defined in this template.  You should keep this as default unless your know what your doing.",
+        "required": true,
+        "value": "petclinic"
+      },
+      {
+        "name": "ENV_NAME",
+        "displayName": "Name",
+        "description": "The name assigned to all of the objects defined in this template.  You should keep this as default unless your know what your doing.",
+        "required": true,
+        "value": "petclinic"
+      },
+      {
         "name": "NAME_PREFIX",
         "displayName": "Name",
         "description": "The name assigned to all of the objects defined in this template.  You should keep this as default unless your know what your doing.",
@@ -27,9 +41,8 @@
             "metadata": {
                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
                 "labels": {
-                    "app": "${NAME_PREFIX}${NAME_SUFFIX}",
-                    "app-prefix": "${NAME_PREFIX}",
-                    "app-suffix": "${NAME_SUFFIX}"
+                    "app-name": "${APP_NAME}",
+                    "env-name": "${ENV_NAME}"
                 }
             }
         },
@@ -39,9 +52,8 @@
         "metadata": {
           "name": "${NAME_PREFIX}${NAME_SUFFIX}",
           "labels": {
-            "app": "${NAME_PREFIX}${NAME_SUFFIX}",
-            "app-prefix": "${NAME_PREFIX}",
-            "app-suffix": "${NAME_SUFFIX}"
+            "app-name": "${APP_NAME}",
+            "env-name": "${ENV_NAME}"
           }
         },
         "spec": {

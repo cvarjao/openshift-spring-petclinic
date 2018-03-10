@@ -95,7 +95,7 @@ pipeline {
                     def bcSuffix='_dev'
 
                     if (isPullRequest){
-                        buildEnvName = "pr_${pullRequestNumber}"
+                        buildEnvName = "pr-${pullRequestNumber}"
                         resourceBuildNameSuffix = "_pr_${pullRequestNumber}";
                         bcSuffix="_pr_${pullRequestNumber}";
                     }else{
@@ -105,7 +105,7 @@ pipeline {
 
                     openshift.withCluster() {
                         echo "Waiting for all builds to complete/cancel"
-                        openshift.selector( 'bc', ['app-prefix':bcPrefix, 'app-suffix':bcSuffix]).narrow('bc').cancelBuild()
+                        openshift.selector( 'bc', ['app-name':appName, 'env-name':buildEnvName]).narrow('bc').cancelBuild()
                         openshift.selector( 'builds', baseDeleteLabels ).watch {
                           if ( it.count() == 0 ) return true
                           def allDone = true
@@ -119,7 +119,7 @@ pipeline {
                           return allDone;
                         }
                         //create or patch DCs
-                        def models = openshift.process("-f", "openshift.bc.json", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
+                        def models = openshift.process("-f", "openshift.bc.json",  "-p", "APP_NAME=${appName}", "-p", "ENV_NAME=${buildEnvName}", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
                         echo "The template will create/update ${models.size()} objects"
                         echo "The template will create/update: ${models.names()}"
                     }
