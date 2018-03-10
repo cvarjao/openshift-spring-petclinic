@@ -57,12 +57,6 @@
           }
         },
         "spec": {
-          "triggers": [
-            {
-              "type": "ImageChange",
-              "imageChange": {}
-            }
-          ],
           "runPolicy": "Serial",
           "source": {
             "type": "Git",
