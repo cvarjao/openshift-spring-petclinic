@@ -65,7 +65,6 @@ pipeline {
 
 
                 def scmUrl = scm.getUserRemoteConfigs()[0].getUrl()
-                def appName = null;
                 def envName = null;
 
 
@@ -79,18 +78,12 @@ pipeline {
                   resourceBuildNamePrefix = "-dev";
                 }
 
-                appId = "${appName}-${envName}";
-
-                def baseDeleteLabels=[ 'app-name':appName, 'env-name':envName]
-                def baseNewAppLabels=[ 'app':appId, 'env-name':envName, 'build-number':"${env.BUILD_NUMBER}", 'app-name':appName]
-
                 if (isPullRequest){
                   baseNewAppLabels['from-pr']='true'
                 }
 
                 echo "scmUrl:${scmUrl}"
                 echo "appName:${appName}"
-                echo "envName:${envName}"
                 echo "appId:${appId}"
                 echo "buildBranchName:${buildBranchName}"
                 echo "scm.getBranches():${scm.getBranches()}"
