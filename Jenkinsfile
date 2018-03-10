@@ -134,8 +134,6 @@ pipeline {
                             }
                         }
 
-                        echo "The template created : ${created.names()}"
-
                         echo "Starting Build"
                         def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
