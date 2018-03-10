@@ -92,12 +92,12 @@ pipeline {
             steps {
                 script {
                     def bcPrefix=appName;
-                    def bcSuffix='-dev'
+                    def bcSuffix='_dev'
 
                     if (isPullRequest){
-                        buildEnvName = "pr-${pullRequestNumber}"
-                        resourceBuildNameSuffix = "-PR-${pullRequestNumber}";
-                        bcSuffix="-pr-${pullRequestNumber}";
+                        buildEnvName = "pr_${pullRequestNumber}"
+                        resourceBuildNameSuffix = "_pr_${pullRequestNumber}";
+                        bcSuffix="_pr_${pullRequestNumber}";
                     }else{
                         buildEnvName = 'dev'
                         resourceBuildNameSuffix = "-DEV";
