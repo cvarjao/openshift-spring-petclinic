@@ -85,7 +85,7 @@
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
-                                "image": "${NAME_PREFIX}${NAME_SUFFIX}",
+                                "image": "${DC_PROJECT}/${NAME_PREFIX}${NAME_SUFFIX}@latest",
                                 "ports": [
                                     {
                                         "name": "jolokia",

@@ -197,7 +197,10 @@ pipeline {
                                 "-p", "APP_NAME=${appName}",
                                 "-p", "ENV_NAME=${envName}",
                                 "-p", "NAME_PREFIX=${dcPrefix}",
-                                "-p", "NAME_SUFFIX=${dcSuffix}")
+                                "-p", "NAME_SUFFIX=${dcSuffix}",
+                                "-p", "BC_PROJECT=${openshift.project()}",
+                                "-p", "DC_PROJECT=${openshift.project()}"
+                                )
                         echo "The template will create/update ${models.size()} objects"
                         openshift.apply(models);
 
