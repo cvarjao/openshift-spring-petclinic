@@ -214,7 +214,11 @@ pipeline {
                                 }
                             }
                         }
+
+                        openshift.selector( 'dc', dcSelector).pause();
                         openshift.apply(models);
+
+                        //openshift.selector("dc/${dcPrefix}${dcSuffix}").resume();
 
                         def buildSelector = openshift.selector( 'dc', dcSelector);
 
