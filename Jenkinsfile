@@ -207,7 +207,7 @@ pipeline {
                                 for ( c in o.spec.template.spec.containers ) {
                                     def imageRef=c.image.split('/');
                                     def imageRefName=imageRef[imageRef.size() -1]
-                                    def isTag=openshift.selector("istag/${imageRefName.replace('\\Q@\\E', ':')}").object()
+                                    def isTag=openshift.selector("istag/${imageRefName.replace('@', ':')}").object()
                                     echo "isTag:${isTag}"
                                 }
                             }
