@@ -121,6 +121,9 @@ pipeline {
                         //create or patch DCs
                         def models = openshift.process("-f", "openshift.bc.json",  "-p", "APP_NAME=${appName}", "-p", "ENV_NAME=${buildEnvName}", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
                         echo "The template will create/update ${models.size()} objects"
+                        for ( o in models ) {
+                            o.metadata.labels[ "app" ] = "${appName}-${buildEnvName}"
+                        }
                         def created = openshift.create( models )
                         echo "The template will create/update: ${created.names()}"
                     }
