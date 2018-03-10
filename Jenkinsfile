@@ -113,19 +113,21 @@ pipeline {
 
                     openshift.withCluster() {
                         echo "Waiting for all builds to complete/cancel"
-                        openshift.selector( 'bc', bcSelector).narrow('bc').cancelBuild()
+                        openshift.selector( 'bc', bcSelector).cancelBuild();
+
                         openshift.selector( 'builds', bcSelector).watch {
                           if ( it.count() == 0 ) return true
                           def allDone = true
                           it.withEach {
                               def buildModel = it.object()
-                              echo "${it.name()}:status.phase: ${it.object().status.phase}"
+                              //echo "${it.name()}:status.phase: ${it.object().status.phase}"
                               if ( it.object().status.phase != "Complete" &&  it.object().status.phase != "Failed") {
                                   allDone = false
                               }
                           }
                           return allDone;
                         }
+
                         //create or patch DCs
                         def models = openshift.process("-f", "openshift.bc.json",
                                 "-p", "APP_NAME=${appName}",
@@ -160,7 +162,7 @@ pipeline {
                             echo "New build started - ${buildSelector.name()}"
                             buildSelector.label(['commit-id':"${gitAppCommitId}"], "--overwrite")
                             buildSelector.logs('-f');
-                            def build=buildSelector.object();
+                            def build=openshift.selector("builds/${buildSelector.name()}").object();
                             if (!"Complete".equalsIgnoreCase(build.status.phase)){
                                 error "Build '${buildSelector.name()}' did not successfully complete (${build.status.phase})"
                             }

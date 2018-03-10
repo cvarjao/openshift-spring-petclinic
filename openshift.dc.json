@@ -78,7 +78,7 @@
                     "resources": {},
                     "activeDeadlineSeconds": 21600
                 },
-                "replicas": 0,
+                "replicas": 1,
                 "test": false,
                 "selector": {
                     "deploymentConfig": "${NAME_PREFIX}${NAME_SUFFIX}"
