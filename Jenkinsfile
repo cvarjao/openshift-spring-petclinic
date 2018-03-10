@@ -162,7 +162,7 @@ pipeline {
                             buildSelector.logs('-f');
                             def build=buildSelector.object();
                             if (!"Complete".equalsIgnoreCase(build.status.phase)){
-                                error "Build '${buildSelector.name()}' did not successfully complete"
+                                error "Build '${buildSelector.name()}' did not successfully complete (${build.status.phase})"
                             }
                         }else{
                             echo "Skipping new build. Reusing '${buildSelector.name()}'"
