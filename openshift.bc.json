@@ -32,6 +32,12 @@
         "description": "The suffix for all created objects",
         "required": false,
         "value": ""
+      },{
+        "name": "GIT_REPO_URL",
+        "displayName": "Name",
+        "description": "The suffix for all created objects",
+        "required": false,
+        "value": ""
       }
     ],
     "objects": [

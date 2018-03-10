@@ -121,16 +121,24 @@ pipeline {
                           return allDone;
                         }
                         //create or patch DCs
-                        def models = openshift.process("-f", "openshift.bc.json",  "-p", "APP_NAME=${appName}", "-p", "ENV_NAME=${buildEnvName}", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
+                        def models = openshift.process("-f", "openshift.bc.json",
+                                "-p", "APP_NAME=${appName}",
+                                "-p", "ENV_NAME=${buildEnvName}",
+                                "-p", "NAME_PREFIX=${bcPrefix}",
+                                "-p", "NAME_SUFFIX=${bcSuffix}",
+                                "-p", "GIT_REPO_URL=${scmUrl}")
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             o.metadata.labels[ "app" ] = "${appName}-${buildEnvName}"
-                            if (openshift.selector("${o.kind}/${o.metadata.name}").count()==0){
+                            def sel=openshift.selector("${o.kind}/${o.metadata.name}");
+                            if (sel.count()==0){
                                 echo "Creating '${o.kind}/${o.metadata.name}"
                                 openshift.create([o]);
                             }else{
-                                echo "Patching '${o.kind}/${o.metadata.name}"
                                 //TODO: Patching
+                                echo "Patching '${o.kind}/${o.metadata.name}"
+                                echo "${o}"
+                                sel.patch(o);
                             }
                         }
 
