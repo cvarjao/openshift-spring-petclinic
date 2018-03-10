@@ -194,6 +194,9 @@ pipeline {
                     def dcSelector=['app-name':appName, 'env-name':buildEnvName];
 
                     openshift.withCluster() {
+                        def whoamiResult = openshift.raw( 'whoami', '-c' )
+                        echo "WhoAmI:${whoamiResult.out}"
+
                         //create or patch BCs
                         def models = openshift.process("-f", "openshift.dc.json",
                                 "-p", "APP_NAME=${appName}",
