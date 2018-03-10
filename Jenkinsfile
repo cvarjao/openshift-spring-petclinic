@@ -70,9 +70,10 @@ pipeline {
 
                 if (isPullRequest){
                   pullRequestNumber=env.CHANGE_ID
-                  gitBranchRemoteRef="refs/pull/${env.CHANGE_ID}/head";
+                  gitBranchRemoteRef="refs/pull/${pullRequestNumber}/head";
                   buildBranchName = env.BRANCH_NAME;
-
+                  sh "git remote -v"
+                  sh "git ls-remote origin refs/pull/${pullRequestNumber}/*"
                 }else{
                   buildBranchName = env.BRANCH_NAME;
                   resourceBuildNamePrefix = "-dev";
@@ -93,6 +94,7 @@ pipeline {
                 script {
                     def bcPrefix=appName;
                     def bcSuffix='-dev';
+                    def buildBranchName=gitBranchRemoteRef;
 
                     if (isPullRequest){
                         buildEnvName = "pr-${pullRequestNumber}"
@@ -101,10 +103,12 @@ pipeline {
                         buildEnvName = 'dev'
                     }
 
+                    def bcSelector=['app-name':appName, 'env-name':buildEnvName];
+
                     openshift.withCluster() {
                         echo "Waiting for all builds to complete/cancel"
-                        openshift.selector( 'bc', ['app-name':appName, 'env-name':buildEnvName]).narrow('bc').cancelBuild()
-                        openshift.selector( 'builds', ['app-name':appName, 'env-name':buildEnvName] ).watch {
+                        openshift.selector( 'bc', bcSelector).narrow('bc').cancelBuild()
+                        openshift.selector( 'builds', bcSelector).watch {
                           if ( it.count() == 0 ) return true
                           def allDone = true
                           it.withEach {
@@ -121,9 +125,24 @@ pipeline {
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             o.metadata.labels[ "app" ] = "${appName}-${buildEnvName}"
+                            if (openshift.selector("${o.kind}/${o.metadata.name}").count()==0){
+                                echo "Creating '${o.kind}/${o.metadata.name}"
+                                openshift.create([o]);
+                            }else{
+                                echo "Patching '${o.kind}/${o.metadata.name}"
+                                //TODO: Patching
+                            }
                         }
-                        def created = openshift.create( models )
-                        echo "The template will create/update: ${created.names()}"
+
+                        echo "The template created : ${created.names()}"
+
+                        echo "Starting Build"
+                        def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildBranchName}")
+                        echo "New build started - ${buildSelector.name()}"
+                        buildSelector.logs('-f');
+                        echo buildSelector.object();
+
+                        //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
                     }
 
                 } //end script
