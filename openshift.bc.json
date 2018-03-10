@@ -67,7 +67,7 @@
           "source": {
             "type": "Git",
             "git": {
-              "uri": "https://github.com/spring-projects/spring-petclinic.git",
+              "uri": "${GIT_REPO_URL}",
               "ref": "master"
             },
             "contextDir": "spring-petclinic"

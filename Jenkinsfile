@@ -137,10 +137,7 @@ pipeline {
                                 echo "Creating '${o.kind}/${o.metadata.name}"
                                 openshift.create([o]);
                             }else{
-                                //TODO: Patching
                                 echo "Patching '${o.kind}/${o.metadata.name}"
-                                echo "${o}"
-                                //sel.patch(o);
                                 openshift.apply(o);
                             }
                             */
@@ -150,9 +147,12 @@ pipeline {
                         echo "Starting Build"
                         def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
+                        buildSelector.label(['commit-id':"${gitCommitId}"], "--overwrite")
                         buildSelector.logs('-f');
-                        echo "${buildSelector.object()}";
-
+                        def build=buildSelector.object();
+                        if (!"Complete".equalsIgnoreCase(build.status.phase)){
+                            error "Build '${buildSelector.name()}' did not successfully complete"
+                        }
                         //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
                     }
 
