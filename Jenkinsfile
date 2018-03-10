@@ -78,10 +78,6 @@ pipeline {
                   resourceBuildNamePrefix = "-dev";
                 }
 
-                if (isPullRequest){
-                  baseNewAppLabels['from-pr']='true'
-                }
-
                 echo "scmUrl:${scmUrl}"
                 echo "appName:${appName}"
                 echo "appId:${appId}"
