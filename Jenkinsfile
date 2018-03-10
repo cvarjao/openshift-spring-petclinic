@@ -208,7 +208,7 @@ pipeline {
                                     def imageRef=c.image.split('/');
                                     def imageRefName=imageRef[imageRef.size() -1]
                                     def isTag=openshift.selector("istag/${imageRefName.replace('@', ':')}").object()
-                                    echo "isTag:${isTag.image.dockerImageReference}"
+                                    c.image=isTag.image.dockerImageReference;
                                 }
                             }
                         }
