@@ -162,7 +162,7 @@ pipeline {
                             echo "New build started - ${buildSelector.name()}"
                             buildSelector.label(['commit-id':"${gitAppCommitId}"], "--overwrite")
                             buildSelector.logs('-f');
-                            def build=openshift.selector("builds/${buildSelector.name()}").object();
+                            def build=openshift.selector("${buildSelector.name()}").object();
                             if (!"Complete".equalsIgnoreCase(build.status.phase)){
                                 error "Build '${buildSelector.name()}' did not successfully complete (${build.status.phase})"
                             }
