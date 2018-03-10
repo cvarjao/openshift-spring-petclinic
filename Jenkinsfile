@@ -88,49 +88,49 @@ pipeline {
                 echo "buildBranchName:${buildBranchName}"
                 echo "scm.getBranches():${scm.getBranches()}"
                 echo "scm.getKey():${scm.getKey()}"
-              }
-            }
+              } //end script
+            } // end steps
         }
         stage('Build') {
             agent any
             steps {
-                def bcPrefix=appName;
-                def bcSuffix='-dev'
+                script {
+                    def bcPrefix=appName;
+                    def bcSuffix='-dev'
 
-                if (isPullRequest){
-                    buildEnvName = "pr-${pullRequestNumber}"
-                    resourceBuildNameSuffix = "-PR-${pullRequestNumber}";
-                    bcSuffix="-pr-${pullRequestNumber}";
-                }else{
-                    buildEnvName = 'dev'
-                    resourceBuildNameSuffix = "-DEV";
-                }
-
-                openshift.withCluster() {
-                    echo "Waiting for all builds to complete/cancel"
-                    openshift.selector( 'bc', ['app-prefix':bcPrefix, 'app-suffix':bcSuffix]).narrow('bc').cancelBuild()
-                    openshift.selector( 'builds', baseDeleteLabels ).watch {
-                      if ( it.count() == 0 ) return true
-                      def allDone = true
-                      it.withEach {
-                          def buildModel = it.object()
-                          echo "${it.name()}:status.phase: ${it.object().status.phase}"
-                          if ( it.object().status.phase != "Complete" &&  it.object().status.phase != "Failed") {
-                              allDone = false
-                          }
-                      }
-                      return allDone;
+                    if (isPullRequest){
+                        buildEnvName = "pr-${pullRequestNumber}"
+                        resourceBuildNameSuffix = "-PR-${pullRequestNumber}";
+                        bcSuffix="-pr-${pullRequestNumber}";
+                    }else{
+                        buildEnvName = 'dev'
+                        resourceBuildNameSuffix = "-DEV";
                     }
-                    //create or patch DCs
-                    def models = openshift.process("-f", "openshift.bc.json", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
-                    echo "The template will create/update ${models.size()} objects"
-                    echo "The template will create/update: ${models.names()}"
-                }
 
+                    openshift.withCluster() {
+                        echo "Waiting for all builds to complete/cancel"
+                        openshift.selector( 'bc', ['app-prefix':bcPrefix, 'app-suffix':bcSuffix]).narrow('bc').cancelBuild()
+                        openshift.selector( 'builds', baseDeleteLabels ).watch {
+                          if ( it.count() == 0 ) return true
+                          def allDone = true
+                          it.withEach {
+                              def buildModel = it.object()
+                              echo "${it.name()}:status.phase: ${it.object().status.phase}"
+                              if ( it.object().status.phase != "Complete" &&  it.object().status.phase != "Failed") {
+                                  allDone = false
+                              }
+                          }
+                          return allDone;
+                        }
+                        //create or patch DCs
+                        def models = openshift.process("-f", "openshift.bc.json", "-p", "NAME_PREFIX=${bcPrefix}", "-p", "NAME_SUFFIX=${bcSuffix}")
+                        echo "The template will create/update ${models.size()} objects"
+                        echo "The template will create/update: ${models.names()}"
+                    }
 
-
-            }
-        }
+                } //end script
+            } //end steps
+        } // end stage
         stage('deploy - DEV') {
             agent any
             when {
