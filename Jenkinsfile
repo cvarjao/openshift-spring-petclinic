@@ -22,8 +22,8 @@ def killOldBuilds() {
   }
 }
 
-def sayHello() {
-    echo "Hello"
+def sayHello(String who) {
+    echo "Hello ${who}"
 }
 
 pipeline {
@@ -39,7 +39,7 @@ pipeline {
             agent any
             steps {
               script {
-                sayHello
+                sayHello('World')
                 killOldBuilds();
               }
               checkout scm
