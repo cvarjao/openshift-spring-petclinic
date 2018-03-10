@@ -32,6 +32,18 @@
             "description": "The suffix for all created objects",
             "required": false,
             "value": ""
+        },{
+            "name": "BC_PROJECT",
+            "displayName": "Name",
+            "description": "The suffix for all created objects",
+            "required": false,
+            "value": ""
+        },{
+            "name": "DC_PROJECT",
+            "displayName": "Name",
+            "description": "The suffix for all created objects",
+            "required": false,
+            "value": ""
         }
     ],
     "objects": [
