@@ -131,7 +131,7 @@ pipeline {
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             o.metadata.labels[ "app" ] = "${appName}-${buildEnvName}"
-
+                            /*
                             def sel=openshift.selector("${o.kind}/${o.metadata.name}");
                             if (sel.count()==0){
                                 echo "Creating '${o.kind}/${o.metadata.name}"
@@ -143,9 +143,10 @@ pipeline {
                                 //sel.patch(o);
                                 openshift.apply(o);
                             }
+                            */
 
                         }
-                        //openshift.apply(models);
+                        openshift.apply(models);
                         echo "Starting Build"
                         def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
