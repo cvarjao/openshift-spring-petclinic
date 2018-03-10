@@ -151,7 +151,7 @@ pipeline {
                         def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
                         buildSelector.logs('-f');
-                        echo buildSelector.object();
+                        echo "${buildSelector.object()}";
 
                         //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
                     }
