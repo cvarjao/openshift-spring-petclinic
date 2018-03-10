@@ -115,7 +115,7 @@ pipeline {
 
                 openshift.withCluster() {
                     echo "Waiting for all builds to complete/cancel"
-                    openshift.selector( 'bc', ['app-prefix':bcPrefix, 'app-suffix':bcSuffix]] ).narrow('bc').cancelBuild()
+                    openshift.selector( 'bc', ['app-prefix':bcPrefix, 'app-suffix':bcSuffix]).narrow('bc').cancelBuild()
                     openshift.selector( 'builds', baseDeleteLabels ).watch {
                       if ( it.count() == 0 ) return true
                       def allDone = true
