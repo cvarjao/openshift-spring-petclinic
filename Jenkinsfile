@@ -4,7 +4,7 @@ import jenkins.model.CauseOfInterruption.UserInterruption
 
 @Library('utils') _
 
-def appName='spring-petclinic
+def appName='spring-petclinic'
 def appId=null;
 def doDeploy=false;
 def gitCommitId=''
