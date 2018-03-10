@@ -94,7 +94,7 @@ pipeline {
                 script {
                     def bcPrefix=appName;
                     def bcSuffix='-dev';
-                    def buildBranchName=gitBranchRemoteRef;
+                    def buildRefBranchName=gitBranchRemoteRef;
 
                     if (isPullRequest){
                         buildEnvName = "pr-${pullRequestNumber}"
@@ -137,7 +137,7 @@ pipeline {
                         echo "The template created : ${created.names()}"
 
                         echo "Starting Build"
-                        def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildBranchName}")
+                        def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
                         buildSelector.logs('-f');
                         echo buildSelector.object();
