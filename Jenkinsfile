@@ -148,15 +148,22 @@ pipeline {
                         def gitAppCommitId = sh(returnStdout: true, script: 'git rev-list -1 HEAD -- spring-petclinic').trim()
                         echo "gitAppCommitId:${gitAppCommitId}"
 
-                        echo "Starting Build"
-                        def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
-                        echo "New build started - ${buildSelector.name()}"
-                        buildSelector.label(['commit-id':"${gitCommitId}"], "--overwrite")
-                        buildSelector.logs('-f');
-                        def build=buildSelector.object();
-                        if (!"Complete".equalsIgnoreCase(build.status.phase)){
-                            error "Build '${buildSelector.name()}' did not successfully complete"
+                        def buildSelector = openshift.selector( 'builds', bcSelector + ['commit-id':"${gitAppCommitId}"]);
+                        if (buildSelector.count()==0){
+                            echo "Starting new build"
+                            buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
+                            echo "New build started - ${buildSelector.name()}"
+                            buildSelector.label(['commit-id':"${gitAppCommitId}"], "--overwrite")
+                            buildSelector.logs('-f');
+                            def build=buildSelector.object();
+                            if (!"Complete".equalsIgnoreCase(build.status.phase)){
+                                error "Build '${buildSelector.name()}' did not successfully complete"
+                            }
+                        }else{
+                            echo "Skipping new build. Reusing '${buildSelector.name()}'"
                         }
+
+
                         //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
                     }
 
