@@ -61,9 +61,6 @@
             {
               "type": "ImageChange",
               "imageChange": {}
-            },
-            {
-              "type": "ConfigChange"
             }
           ],
           "runPolicy": "Serial",

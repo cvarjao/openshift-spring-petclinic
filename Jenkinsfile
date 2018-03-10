@@ -92,7 +92,7 @@ pipeline {
             steps {
                 script {
                     def bcPrefix=appName;
-                    def bcSuffix='-dev'; 
+                    def bcSuffix='-dev';
 
                     if (isPullRequest){
                         buildEnvName = "pr-${pullRequestNumber}"
