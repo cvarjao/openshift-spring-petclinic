@@ -14,6 +14,7 @@ def gitBranchRemoteRef=''
 def buildBranchName = null;
 def resourceBuildNameSuffix = '-dev';
 def buildEnvName = 'dev'
+def gitRepoUrl= ''
 
 def killOldBuilds() {
   while(currentBuild.rawBuild.getPreviousBuildInProgress() != null) {
@@ -64,7 +65,7 @@ pipeline {
                 echo "isPullRequest:${isPullRequest}"
 
 
-                def scmUrl = scm.getUserRemoteConfigs()[0].getUrl()
+                gitRepoUrl = scm.getUserRemoteConfigs()[0].getUrl()
                 def envName = null;
 
 
@@ -79,7 +80,7 @@ pipeline {
                   resourceBuildNamePrefix = "-dev";
                 }
 
-                echo "scmUrl:${scmUrl}"
+                echo "gitRepoUrl:${gitRepoUrl}"
                 echo "appName:${appName}"
                 echo "appId:${appId}"
                 echo "buildBranchName:${buildBranchName}"
@@ -126,7 +127,7 @@ pipeline {
                                 "-p", "ENV_NAME=${buildEnvName}",
                                 "-p", "NAME_PREFIX=${bcPrefix}",
                                 "-p", "NAME_SUFFIX=${bcSuffix}",
-                                "-p", "GIT_REPO_URL=${scmUrl}")
+                                "-p", "GIT_REPO_URL=${gitRepoUrl}")
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             o.metadata.labels[ "app" ] = "${appName}-${buildEnvName}"
