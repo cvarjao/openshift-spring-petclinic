@@ -202,6 +202,16 @@ pipeline {
                                 "-p", "DC_PROJECT=${openshift.project()}"
                                 )
                         echo "The template will create/update ${models.size()} objects"
+                        for ( o in models ) {
+                            if ("DeploymentConfig".equals(o.kind)){
+                                for ( c in o.spec.template.spec.containers ) {
+                                    def imageRef=c.image.split('/');
+                                    def imageRefName=imageRef[imageRef.size() -1]
+                                    def isTag=openshift.selector("istag/${imageRefName.replace('\\Q@\\E', ':')}").object()
+                                    echo "isTag:${isTag}"
+                                }
+                            }
+                        }
                         openshift.apply(models);
 
                         def buildSelector = openshift.selector( 'dc', dcSelector);
