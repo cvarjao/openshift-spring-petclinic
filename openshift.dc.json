@@ -159,7 +159,7 @@
                     "deploymentConfig": "${NAME_PREFIX}${NAME_SUFFIX}"
                 },
                 "annotations": {
-                    "description": "Route for application's http service.",
+                    "description": "Route for application's http service."
                 }
             },
             "spec": {
