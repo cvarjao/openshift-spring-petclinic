@@ -215,10 +215,10 @@ pipeline {
                             }
                         }
 
-                        openshift.selector( 'dc', dcSelector).pause();
+                        openshift.selector( 'dc', dcSelector).rollout().pause();
                         openshift.apply(models);
 
-                        //openshift.selector("dc/${dcPrefix}${dcSuffix}").resume();
+                        //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
 
                         def buildSelector = openshift.selector( 'dc', dcSelector);
 
