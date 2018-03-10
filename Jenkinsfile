@@ -2,7 +2,7 @@
 import hudson.model.Result
 import jenkins.model.CauseOfInterruption.UserInterruption
 
-@Library('utils') _
+//@Library('utils') _
 
 def appName='spring-petclinic'
 def appId=null;
