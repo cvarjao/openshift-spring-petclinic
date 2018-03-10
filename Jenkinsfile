@@ -144,6 +144,10 @@ pipeline {
 
                         }
                         openshift.apply(models);
+
+                        def gitAppCommitId = sh(returnStdout: true, script: 'git rev-list -1 HEAD -- spring-petclinic').trim()
+                        echo "gitAppCommitId:${gitAppCommitId}"
+
                         echo "Starting Build"
                         def buildSelector = openshift.selector( 'bc', bcSelector).narrow('bc').startBuild("--commit=${buildRefBranchName}")
                         echo "New build started - ${buildSelector.name()}"
@@ -161,15 +165,14 @@ pipeline {
         } // end stage
         stage('deploy - DEV') {
             agent any
-            when {
-                expression { doDeploy == true}
-            }
+            when { expression { doDeploy == true} }
             steps {
                 echo 'Deploying'
             }
         }
         stage('testing') {
             agent any
+            when { expression { doDeploy == true} }
             steps {
                 echo "Testing ..."
                 echo "Testing ... Done!"
@@ -177,6 +180,7 @@ pipeline {
         }
         stage('packaging') {
             agent any
+            when { expression { doDeploy == true} }
             steps {
                 echo "Packaging ..."
                 echo "Packaging ... Done!"
@@ -184,6 +188,7 @@ pipeline {
         }
         stage('publishing') {
             agent any
+            when { expression { doDeploy == true} }
             steps {
                 echo "Publishing ..."
                 echo "Publishing ... Done!"
