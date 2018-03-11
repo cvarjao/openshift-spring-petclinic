@@ -230,12 +230,13 @@ pipeline {
                                         if ('ImageChange'.equalsIgnoreCase(t['type'])){
                                             for ( cn in t.imageChangeParams.containerNames){
                                                 if (cn.equalsIgnoreCase(c.name)){
-                                                    if (t.imageChangeParams['namespace']!=null && t.imageChangeParams['namespace'].length()>0){
-                                                        openshift.withProject('openshift') {
-                                                            c.image=openshift.selector("istag/${t.imageChangeParams.name}").object().image.dockerImageReference
+                                                    if (t.imageChangeParams.from['namespace']!=null && t.imageChangeParams.from['namespace'].length()>0){
+                                                        echo "${t.imageChangeParams.from}"
+                                                        openshift.withProject(t.imageChangeParams.from['namespace']) {
+                                                            c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
                                                         }
                                                     }else{
-                                                        c.image=openshift.selector("istag/${t.imageChangeParams.name}").object().image.dockerImageReference
+                                                        c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
                                                     }
                                                 }
                                             }
