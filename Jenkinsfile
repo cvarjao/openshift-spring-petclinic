@@ -204,8 +204,8 @@ pipeline {
                         def models = null;
                         echo "WhoAmI:${whoamiResult.out}"
 
-                        openshift.selector( 'dc', dcSelector).rollout().pause();
-                        
+                        openshift.selector( 'dc', dcSelector).scale('--replicas=0', '--timeout=2m')
+
                         //Database
                         /*
                         models = openshift.process(
@@ -221,9 +221,10 @@ pipeline {
                             "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
                             '-p', "MYSQL_DATABASE=petclinic"
                         )
+
                         for ( m in models ) {
                             if ("DeploymentConfig".equals(o.kind)){
-                                m.spec.paused=true
+                                m.spec.replicas = 0
                             }
                         }
 
@@ -244,7 +245,7 @@ pipeline {
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             if ("DeploymentConfig".equals(o.kind)){
-                                o.spec.paused=true
+                                o.spec.replicas = 0;
                                 for ( c in o.spec.template.spec.containers ) {
                                     if (c.image.trim().length()>0){
                                         def imageRef=c.image.split('/');
@@ -258,10 +259,10 @@ pipeline {
 
 
                         openshift.apply(models);
-
+                        //openshift.selector( 'dc', dcSelector).scale('--replicas=1', '--timeout=2m')
                         //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
 
-                        def buildSelector = openshift.selector( 'dc', dcSelector);
+                        //def buildSelector = openshift.selector( 'dc', dcSelector);
 
                         //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
                     }
