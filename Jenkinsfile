@@ -277,7 +277,7 @@ pipeline {
 
 
                         openshift.apply(models);
-                        //openshift.selector( 'dc', dcSelector).scale('--replicas=1', '--timeout=2m')
+                        openshift.selector( 'dc', dcSelector).scale('--replicas=1', '--timeout=4m')
                         //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
 
                         //def buildSelector = openshift.selector( 'dc', dcSelector);
