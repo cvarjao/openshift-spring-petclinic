@@ -203,7 +203,8 @@ pipeline {
 
                         models = openshift.process(
                             'openshift//postgresql-ephemeral',
-                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-pgsql${dcSuffix}"
+                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-pgsql${dcSuffix}",
+                            '-p', "POSTGRESQL_DATABASE=petclinic"
                         )
                         echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
                         for ( o in models ) {
@@ -211,7 +212,7 @@ pipeline {
                             //o['labels']['app']="${appName}-${envName}"
                             echo "Creating '${o.kind}/${o.metadata.name}' "
                         }
-                        openshift.apply(models).label(['app':"${appName}-${envName}"], "--overwrite")
+                        openshift.apply(models).label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
 
                         //Application
                         //create or patch BCs

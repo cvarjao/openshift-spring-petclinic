@@ -97,7 +97,52 @@
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
-                                "image": "${DC_PROJECT}/${NAME_PREFIX}${NAME_SUFFIX}@latest",
+                                "image": " ",
+                                "env": [
+                                    {
+                                        "name": "SPRING_PROFILES_ACTIVE",
+                                        "value": "production,mysql,debug"
+                                    },
+                                    {
+                                        "name": "DB_TYPE",
+                                        "value": "mysql"
+                                    },
+                                    {
+                                        "name": "DB_PORT",
+                                        "value": "5432"
+                                    },
+                                    {
+                                        "name": "DB_NAME",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-name",
+                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "DB_USERNAME",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-user",
+                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "DB_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "key": "database-password",
+                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "DB_HOST",
+                                        "value": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                    }
+                                ],
                                 "ports": [
                                     {
                                         "name": "jolokia",
@@ -127,7 +172,27 @@
                         "securityContext": {},
                         "schedulerName": "default-scheduler"
                     }
-                }
+                },
+                "triggers": [
+                    {
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${NAME_PREFIX}${NAME_SUFFIX}"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "${NAME_PREFIX}${NAME_SUFFIX}:latest",
+                                "namespace": "csnr-devops-lab-tools"
+                            },
+                            "lastTriggeredImage": "172.50.0.2:5000/csnr-devops-lab-tools/spring-petclinic-pr-1@sha256:30f884546c181e7bdb6201e6eaba268b78f01364bb989d5d78f2387b563a1d8e"
+                        },
+                        "type": "ImageChange"
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ]
             }
         },
         {
