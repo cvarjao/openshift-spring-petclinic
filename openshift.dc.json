@@ -80,6 +80,7 @@
                 },
                 "replicas": 1,
                 "test": false,
+                "revisionHistoryLimit": 5,
                 "selector": {
                     "deploymentConfig": "${NAME_PREFIX}${NAME_SUFFIX}"
                 },
@@ -94,6 +95,16 @@
                         }
                     },
                     "spec": {
+                        "initContainers": [
+                            {
+                                "image": "openshit/mysql:5.7",
+                                "command": [
+                                    "sh",
+                                    "-c",
+                                    "until nslookup '${NAME_PREFIX}-db${NAME_SUFFIX}'; do echo waiting for '${NAME_PREFIX}-db${NAME_SUFFIX}'; sleep 2; done;"
+                                ]
+                            }
+                        ],
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
