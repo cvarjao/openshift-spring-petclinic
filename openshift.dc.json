@@ -98,7 +98,7 @@
                         "initContainers": [
                             {
                                 "name": "${NAME_PREFIX}-wait-for-db${NAME_SUFFIX}",
-                                "image": "openshit/mysql:5.7",
+                                "image": "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:7638d886370ca1eb3cefcfecf483f8dc4dc1ca05559dd521d1585ae7c4ed668e",
                                 "command": [
                                     "sh",
                                     "-c",
