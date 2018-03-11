@@ -101,7 +101,6 @@
                                 "image": "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:7638d886370ca1eb3cefcfecf483f8dc4dc1ca05559dd521d1585ae7c4ed668e",
                                 "command": [
                                     "/bin/sh",
-                                    "-i",
                                     "-c",
                                     "mysql -h $MYSQL_HOST -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
                                 ],
