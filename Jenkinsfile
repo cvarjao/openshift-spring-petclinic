@@ -223,7 +223,7 @@ pipeline {
                         )
 
                         for ( m in models ) {
-                            if ("DeploymentConfig".equals(o.kind)){
+                            if ("DeploymentConfig".equals(m.kind)){
                                 m.spec.replicas = 0
                             }
                         }
