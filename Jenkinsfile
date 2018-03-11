@@ -195,10 +195,27 @@ pipeline {
 
                     openshift.withCluster() {
                         def whoamiResult = openshift.raw( 'whoami' )
+                        def models = null;
                         echo "WhoAmI:${whoamiResult.out}"
 
+
+                        //Database
+
+                        models = openshift.process(
+                            'openshift/postgresql-ephemeral',
+                            "-p", "DATABASE_SERVICE_NAME-ephemeral=${dcPrefix}-pgsql${dcSuffix}"
+                        )
+                        echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
+                        for ( o in models ) {
+                            if (o['labels'] == null) o['labels']=[];
+                            o['labels']['app']="${appName}-${envName}"
+                            echo "Creating '${o.kind}/${o.metadata.name}' "
+                        }
+                        openshift.apply(models);
+
+                        //Application
                         //create or patch BCs
-                        def models = openshift.process("-f", "openshift.dc.json",
+                        models = openshift.process("-f", "openshift.dc.json",
                                 "-p", "APP_NAME=${appName}",
                                 "-p", "ENV_NAME=${envName}",
                                 "-p", "NAME_PREFIX=${dcPrefix}",
@@ -230,8 +247,8 @@ pipeline {
 
                 } //end script
             }
-        }
-        stage('testing') {
+        } // end stage
+        stage('Deploy - TEST') {
             agent any
             when { expression { doDeploy == true} }
             steps {
@@ -239,7 +256,7 @@ pipeline {
                 echo "Testing ... Done!"
             }
         }
-        stage('packaging') {
+        stage('Deploy - PROD') {
             agent any
             when { expression { doDeploy == true} }
             steps {
