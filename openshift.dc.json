@@ -102,7 +102,7 @@
                                 "command": [
                                     "/bin/bash",
                                     "-c",
-                                    "mysql -h $MYSQL_HOST -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
+                                    "set -x; env | grep MYSQL; mysql -h $MYSQL_HOST -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'"
                                 ],
                                 "env": [
                                     {
