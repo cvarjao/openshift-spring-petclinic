@@ -203,7 +203,7 @@ pipeline {
 
                         models = openshift.process(
                             'openshift//postgresql-ephemeral',
-                            "-p", "DATABASE_SERVICE_NAME-ephemeral=${dcPrefix}-pgsql${dcSuffix}"
+                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-pgsql${dcSuffix}"
                         )
                         echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
                         for ( o in models ) {
