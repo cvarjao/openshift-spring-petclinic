@@ -97,7 +97,7 @@
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
-                                "image": "",
+                                "image": "csnr-devops-lab-tools/${NAME_PREFIX}${NAME_SUFFIX}:latest",
                                 "env": [
                                     {
                                         "name": "SPRING_PROFILES_ACTIVE",
