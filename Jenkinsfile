@@ -24,7 +24,7 @@ def killOldBuilds() {
 
 def updateContainerImages(containers, triggers) {
     for ( c in containers ) {
-        for ( t in riggers) {
+        for ( t in triggers) {
             if ('ImageChange'.equalsIgnoreCase(t['type'])){
                 for ( cn in t.imageChangeParams.containerNames){
                     if (cn.equalsIgnoreCase(c.name)){
