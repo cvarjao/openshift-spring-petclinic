@@ -242,7 +242,7 @@ pipeline {
                             }
                         }
 
-                        openshift.selector( 'dc', dcSelector).rollout().pause();
+                        //openshift.selector( 'dc', dcSelector).rollout().pause();
                         openshift.apply(models);
 
                         //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
