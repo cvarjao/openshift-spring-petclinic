@@ -211,7 +211,7 @@ pipeline {
 
                         models = openshift.process(
                             'openshift//mysql-ephemeral',
-                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db{dcSuffix}",
+                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
                             '-p', "MYSQL_DATABASE=petclinic"
                         )
                         echo "The 'openshift/db' template will create/update ${models.size()} objects"
