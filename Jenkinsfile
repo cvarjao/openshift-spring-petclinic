@@ -207,11 +207,11 @@ pipeline {
                         )
                         echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
                         for ( o in models ) {
-                            if (o['labels'] == null) o['labels']=[];
-                            o['labels']['app']="${appName}-${envName}"
+                            //if (o['labels'] == null) o['labels']=[];
+                            //o['labels']['app']="${appName}-${envName}"
                             echo "Creating '${o.kind}/${o.metadata.name}' "
                         }
-                        openshift.apply(models);
+                        openshift.apply(models).label(['app':"${appName}-${envName}"], "--overwrite")
 
                         //Application
                         //create or patch BCs
