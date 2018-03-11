@@ -229,7 +229,7 @@ pipeline {
                         }
 
                         echo "The 'openshift/db' template will create/update ${models.size()} objects"
-                        TODO: needs to review usage of 'apply' it recreates Secrets!!!
+                        //TODO: needs to review usage of 'apply' it recreates Secrets!!!
                         openshift.apply(models).label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
 
                         //Application
