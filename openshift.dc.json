@@ -106,7 +106,7 @@
                                 ],
                                 "env": [
                                     {
-                                        "name": "$MYSQL_DATABASE",
+                                        "name": "MYSQL_DATABASE",
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-name",
