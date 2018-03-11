@@ -109,14 +109,14 @@
                                     },
                                     {
                                         "name": "DB_PORT",
-                                        "value": "5432"
+                                        "value": "3306"
                                     },
                                     {
                                         "name": "DB_NAME",
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-name",
-                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db${NAME_SUFFIX}"
                                             }
                                         }
                                     },
@@ -125,7 +125,7 @@
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-user",
-                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db${NAME_SUFFIX}"
                                             }
                                         }
                                     },
@@ -134,13 +134,13 @@
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-password",
-                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db${NAME_SUFFIX}"
                                             }
                                         }
                                     },
                                     {
                                         "name": "DB_HOST",
-                                        "value": "${NAME_PREFIX}-db{NAME_SUFFIX}"
+                                        "value": "${NAME_PREFIX}-db${NAME_SUFFIX}"
                                     }
                                 ],
                                 "ports": [
