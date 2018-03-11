@@ -97,6 +97,7 @@
                     "spec": {
                         "initContainers": [
                             {
+                                "name": "${NAME_PREFIX}-wait-for-db${NAME_SUFFIX}",
                                 "image": "openshit/mysql:5.7",
                                 "command": [
                                     "sh",
