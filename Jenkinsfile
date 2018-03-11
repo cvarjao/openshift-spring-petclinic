@@ -204,7 +204,8 @@ pipeline {
                         def models = null;
                         echo "WhoAmI:${whoamiResult.out}"
 
-
+                        openshift.selector( 'dc', dcSelector).rollout().pause();
+                        
                         //Database
                         /*
                         models = openshift.process(
@@ -255,7 +256,7 @@ pipeline {
                             }
                         }
 
-                        //openshift.selector( 'dc', dcSelector).rollout().pause();
+
                         openshift.apply(models);
 
                         //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
