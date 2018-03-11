@@ -200,18 +200,22 @@ pipeline {
 
 
                         //Database
-
+                        /*
                         models = openshift.process(
                             'openshift//postgresql-ephemeral',
                             "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-pgsql${dcSuffix}",
                             '-p', "POSTGRESQL_DATABASE=petclinic"
                         )
                         echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
-                        for ( o in models ) {
-                            //if (o['labels'] == null) o['labels']=[];
-                            //o['labels']['app']="${appName}-${envName}"
-                            echo "Creating '${o.kind}/${o.metadata.name}' "
-                        }
+                        */
+
+                        models = openshift.process(
+                            'openshift//mysql-ephemeral',
+                            "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db{dcSuffix}",
+                            '-p', "MYSQL_DATABASE=petclinic"
+                        )
+                        echo "The 'openshift/db' template will create/update ${models.size()} objects"
+
                         openshift.apply(models).label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
 
                         //Application

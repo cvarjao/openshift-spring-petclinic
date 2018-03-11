@@ -97,11 +97,11 @@
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
-                                "image": " ",
+                                "image": "",
                                 "env": [
                                     {
                                         "name": "SPRING_PROFILES_ACTIVE",
-                                        "value": "production,mysql,debug"
+                                        "value": "production,mysql"
                                     },
                                     {
                                         "name": "DB_TYPE",
@@ -116,7 +116,7 @@
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-name",
-                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
                                             }
                                         }
                                     },
@@ -125,7 +125,7 @@
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-user",
-                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
                                             }
                                         }
                                     },
@@ -134,13 +134,13 @@
                                         "valueFrom": {
                                             "secretKeyRef": {
                                                 "key": "database-password",
-                                                "name": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                                "name": "${NAME_PREFIX}-db{NAME_SUFFIX}"
                                             }
                                         }
                                     },
                                     {
                                         "name": "DB_HOST",
-                                        "value": "${NAME_PREFIX}-pgsql${NAME_SUFFIX}"
+                                        "value": "${NAME_PREFIX}-db{NAME_SUFFIX}"
                                     }
                                 ],
                                 "ports": [
