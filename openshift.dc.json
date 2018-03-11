@@ -229,8 +229,7 @@
                                 "kind": "ImageStreamTag",
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}:latest",
                                 "namespace": "csnr-devops-lab-tools"
-                            },
-                            "lastTriggeredImage": "172.50.0.2:5000/csnr-devops-lab-tools/spring-petclinic-pr-1@sha256:30f884546c181e7bdb6201e6eaba268b78f01364bb989d5d78f2387b563a1d8e"
+                            }
                         },
                         "type": "ImageChange"
                     },

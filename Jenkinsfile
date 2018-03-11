@@ -225,6 +225,23 @@ pipeline {
                         for ( m in models ) {
                             if ("DeploymentConfig".equals(m.kind)){
                                 m.spec.replicas = 0
+                                for ( c in m.spec.template.spec.containers ) {
+                                    for ( t in m.spec.triggers) {
+                                        if ('ImageChange'.equalsIgnoreCase(t['type'])){
+                                            for ( cn in t.imageChangeParams.containerNames){
+                                                if (cn.equalsIgnoreCase(c.name)){
+                                                    if (t.imageChangeParams['namespace']!=null && t.imageChangeParams['namespace'].length()>0){
+                                                        openshift.withProject('openshift') {
+                                                            c.image=openshift.selector("istag/${t.imageChangeParams.name}").object().image.dockerImageReference
+                                                        }
+                                                    }else{
+                                                        c.image=openshift.selector("istag/${t.imageChangeParams.name}").object().image.dockerImageReference
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
 
