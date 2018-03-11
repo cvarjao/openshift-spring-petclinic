@@ -22,6 +22,27 @@ def killOldBuilds() {
   }
 }
 
+def updateContainerImages(containers, triggers) {
+    for ( c in containers ) {
+        for ( t in riggers) {
+            if ('ImageChange'.equalsIgnoreCase(t['type'])){
+                for ( cn in t.imageChangeParams.containerNames){
+                    if (cn.equalsIgnoreCase(c.name)){
+                        echo "${t.imageChangeParams.from}"
+                        if (t.imageChangeParams.from['namespace']!=null && t.imageChangeParams.from['namespace'].length()>0){
+                            openshift.withProject(t.imageChangeParams.from['namespace']) {
+                                c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
+                            }
+                        }else{
+                            c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 def sayHello(String who) {
     echo "Hello ${who}"
 }
@@ -225,6 +246,9 @@ pipeline {
                         for ( m in models ) {
                             if ("DeploymentConfig".equals(m.kind)){
                                 m.spec.replicas = 0
+                                updateContainerImages(m.spec.template.spec.containers, m.spec.triggers);
+
+                                /*
                                 for ( c in m.spec.template.spec.containers ) {
                                     for ( t in m.spec.triggers) {
                                         if ('ImageChange'.equalsIgnoreCase(t['type'])){
@@ -243,6 +267,7 @@ pipeline {
                                         }
                                     }
                                 }
+                                */
                             }
                         }
 
