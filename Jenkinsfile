@@ -220,8 +220,14 @@ pipeline {
                             "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
                             '-p', "MYSQL_DATABASE=petclinic"
                         )
-                        echo "The 'openshift/db' template will create/update ${models.size()} objects"
+                        for ( m in models ) {
+                            if ("DeploymentConfig".equals(o.kind)){
+                                m.spec.paused=true
+                            }
+                        }
 
+                        echo "The 'openshift/db' template will create/update ${models.size()} objects"
+                        TODO: needs to review usage of 'apply' it recreates Secrets!!!
                         openshift.apply(models).label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
 
                         //Application
@@ -237,6 +243,7 @@ pipeline {
                         echo "The template will create/update ${models.size()} objects"
                         for ( o in models ) {
                             if ("DeploymentConfig".equals(o.kind)){
+                                o.spec.paused=true
                                 for ( c in o.spec.template.spec.containers ) {
                                     if (c.image.trim().length()>0){
                                         def imageRef=c.image.split('/');
