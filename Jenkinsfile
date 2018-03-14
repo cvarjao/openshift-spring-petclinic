@@ -296,8 +296,8 @@ pipeline {
                             def o=imageStream.object();
                             def imageStreamName="${imageStream.name()}"
 
-                            echo buildImageStreams[imageStreamName]
-                            echo buildImageStreams.containsKey(imageStreamName)
+                            echo "${buildImageStreams[imageStreamName]}"
+                            echo "${buildImageStreams.containsKey(imageStreamName)}"
 
                             echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams[imageStreamName]}'"
                             echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams['imagestreams/spring-petclinic-pr-1']}'"
