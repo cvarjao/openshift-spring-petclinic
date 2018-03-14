@@ -306,8 +306,8 @@ pipeline {
                             echo "${buildImageStreams.containsKey(imageStreamName)}"
 
                             echo "Checking ImageStream '${imageStreamName}' - '${buildImageStreams[imageStreamName]}'"
-                            echo "Checking ImageStream '${imageStreamName}' - '${buildImageStreams['imagestreams/spring-petclinic-pr-1']}'"
-                            if (buildImageStreams[imageStreamName] == true ){
+
+                            if (buildImageStreams[imageStreamName] != null ){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
                                 openshift.tag("${buildProjectName}/${o.metadata.name}:latest", "${o.metadata.name}:${envName}")
                             }
