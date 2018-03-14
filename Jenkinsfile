@@ -294,9 +294,14 @@ pipeline {
 
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
-                            echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams[imageStream.name()]}'"
+                            def imageStreamName="${imageStream.name()}"
+
+                            echo buildImageStreams[imageStreamName]
+                            echo buildImageStreams.containsKey(imageStreamName)
+
+                            echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams[imageStreamName]}'"
                             echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams['imagestreams/spring-petclinic-pr-1']}'"
-                            if (buildImageStreams["${imageStream.name()}"] == true ){
+                            if (buildImageStreams[imageStreamName] == true ){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
                                 openshift.tag("${buildProjectName}/${o.metadata.name}:latest", "${o.metadata.name}:${envName}")
                             }
