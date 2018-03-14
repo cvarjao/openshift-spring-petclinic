@@ -225,6 +225,8 @@ pipeline {
                     def dcSuffix='-dev';
                     def envName="dev"
 
+
+
                     if (isPullRequest){
                         envName = "pr-${pullRequestNumber}"
                         dcSuffix="-pr-${pullRequestNumber}";
@@ -296,22 +298,9 @@ pipeline {
 
                         def selector=openshift.apply(models);
 
-                        echo "buildImageStreams:${buildImageStreams}"
-
-                        for (def entry : buildImageStreams.entrySet()){
-                            println "${entry.key}=${entry.value}"
-                        }
-
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
                             def imageStreamName="${o.metadata.name}"
-
-                            echo "imageStreamName='${imageStreamName}'"
-
-                            echo "${buildImageStreams[imageStreamName]}"
-                            echo "${buildImageStreams.containsKey(imageStreamName)}"
-
-                            echo "Checking ImageStream '${imageStreamName}' - '${buildImageStreams[imageStreamName]}'"
 
                             if (buildImageStreams[imageStreamName] != null ){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
