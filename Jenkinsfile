@@ -229,7 +229,7 @@ pipeline {
                     openshift.withCluster() {
                        def buildProjectName="${openshift.project()}"
                        def buildImageStreams=openshift.selector( 'is', ['app-name':appName, 'env-name':buildEnvName]).names()
-
+                       echo "buildImageStreams:${buildImageStreams}"
                     openshift.withCredentials( 'jenkins-deployer-dev.token' ) {
                     openshift.withProject( 'csnr-devops-lab-deploy' ) {
                         def whoamiResult = openshift.raw( 'whoami' )
