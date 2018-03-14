@@ -222,6 +222,8 @@ pipeline {
                     def dcSelector=['app-name':appName, 'env-name':buildEnvName];
 
                     openshift.withCluster() {
+                    openshift.withCredentials( 'jenkins-deployer-dev.token' ) {
+                    openshift.withProject( 'csnr-devops-lab-deploy' ) {
                         def whoamiResult = openshift.raw( 'whoami' )
                         def models = null;
                         echo "WhoAmI:${whoamiResult.out}"
@@ -309,7 +311,9 @@ pipeline {
                         //def buildSelector = openshift.selector( 'dc', dcSelector);
 
                         //TODO: Re-add build triggers (ImageChange, ConfigurationChange)
-                    }
+                    } // end openshift.withProject()
+                    } // end openshift.withCredentials()
+                    } // end openshift.withCluster()
 
                 } //end script
             }
