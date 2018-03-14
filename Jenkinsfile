@@ -292,9 +292,15 @@ pipeline {
 
                         echo "buildImageStreams:${buildImageStreams}"
 
+                        for (def entry : buildImageStreams.entrySet()){
+                            println "${entry.key}=${entry.value}"
+                        }
+
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
                             def imageStreamName="${imageStream.name()}"
+
+                            echo "imageStreamName='${imageStreamName}'"
 
                             echo "${buildImageStreams[imageStreamName]}"
                             echo "${buildImageStreams.containsKey(imageStreamName)}"
