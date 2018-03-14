@@ -228,7 +228,11 @@ pipeline {
 
                     openshift.withCluster() {
                        def buildProjectName="${openshift.project()}"
-                       def buildImageStreams=openshift.selector( 'is', ['app-name':appName, 'env-name':buildEnvName]).names()
+                       def buildImageStreams=[:];
+                       openshift.selector( 'is', ['app-name':appName, 'env-name':buildEnvName]).withEach {
+                         buildImageStreams[it.name()]=true;
+                       }
+
                        echo "buildImageStreams:${buildImageStreams}"
                     openshift.withCredentials( 'jenkins-deployer-dev.token' ) {
                     openshift.withProject( 'csnr-devops-lab-deploy' ) {
@@ -289,7 +293,7 @@ pipeline {
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
                             echo "Checking ImageStream 'imagestreams/${o.metadata.name}'"
-                            if (buildImageStreams.contains("imagestreams/${o.metadata.name}")){
+                            if (buildImageStreams[imageStream.name()] == true ){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
                                 openshift.tag("${buildProjectName}/${o.metadata.name}:latest", "${o.metadata.name}:${envName}")
                             }
