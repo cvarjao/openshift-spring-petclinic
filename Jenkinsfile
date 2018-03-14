@@ -289,7 +289,7 @@ pipeline {
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
                             echo "Checking ImageStream '${imageStream.name()}'"
-                            if (buildImageStreams.contains("${imageStream.name()}"){
+                            if (buildImageStreams.contains("${imageStream.name()}")){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
                                 //openshift.tag("${buildProjectName}/ruby:2.0", "${o.metadata.name}:${envName}")
 
