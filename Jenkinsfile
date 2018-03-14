@@ -30,12 +30,18 @@ def updateContainerImages(containers, triggers) {
                 for ( cn in t.imageChangeParams.containerNames){
                     if (cn.equalsIgnoreCase(c.name)){
                         echo "${t.imageChangeParams.from}"
+                        def selector=openshift.selector("istag/${t.imageChangeParams.from.name}");
+
                         if (t.imageChangeParams.from['namespace']!=null && t.imageChangeParams.from['namespace'].length()>0){
                             openshift.withProject(t.imageChangeParams.from['namespace']) {
-                                c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
+                                selector=openshift.selector("istag/${t.imageChangeParams.from.name}");
                             }
+                        }
+
+                        if (selector.count() == 1 ){
+                            c.image=selector.object().image.dockerImageReference
                         }else{
-                            c.image=openshift.selector("istag/${t.imageChangeParams.from.name}").object().image.dockerImageReference
+                            c.image = " ";
                         }
                     }
                 }
