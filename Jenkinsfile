@@ -194,8 +194,13 @@ pipeline {
                             if (!"Complete".equalsIgnoreCase(build.status.phase)){
                                 error "Build '${buildSelector.name()}' did not successfully complete (${build.status.phase})"
                             }
+                            echo "OutputImageDigest: '${build.status.output.to.imageDigest}'"
+                            echo "outputDockerImageReference: '${build.status.outputDockerImageReference}'"
                         }else{
                             echo "Skipping new build. Reusing '${buildSelector.name()}'"
+                            def build=buildSelector.object()
+                            echo "OutputImageDigest: '${build.status.output.to.imageDigest}'"
+                            echo "outputDockerImageReference: '${build.status.outputDockerImageReference}'"
                         }
 
 
@@ -219,9 +224,12 @@ pipeline {
                         dcSuffix="-pr-${pullRequestNumber}";
                     }
 
-                    def dcSelector=['app-name':appName, 'env-name':buildEnvName];
+                    def dcSelector=['app-name':appName, 'env-name':envName];
 
                     openshift.withCluster() {
+                       def buildProjectName="${openshift.project()}"
+                       def buildImageStreams=openshift.selector( 'is', ['app-name':appName, 'env-name':buildEnvName]).names()
+
                     openshift.withCredentials( 'jenkins-deployer-dev.token' ) {
                     openshift.withProject( 'csnr-devops-lab-deploy' ) {
                         def whoamiResult = openshift.raw( 'whoami' )
@@ -276,7 +284,21 @@ pipeline {
                         }
 
 
-                        openshift.apply(models);
+                        def selector=openshift.apply(models);
+
+                        selector.narrow('is').withEach { imageStream ->
+                            def o=imageStream.object();
+                            echo "Checking ImageStream '${imageStream.name()}'"
+                            if (buildImageStreams.contains("${imageStream.name()}"){
+                                echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
+                                //openshift.tag("${buildProjectName}/ruby:2.0", "${o.metadata.name}:${envName}")
+
+                            }
+                        }
+
+
+
+
                         openshift.selector( 'dc', dcSelector).scale('--replicas=1', '--timeout=4m')
                         //openshift.selector("dc/${dcPrefix}${dcSuffix}").rollout().resume();
 

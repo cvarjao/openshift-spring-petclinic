@@ -142,7 +142,7 @@
                         "containers": [
                             {
                                 "name": "${NAME_PREFIX}${NAME_SUFFIX}",
-                                "image": "csnr-devops-lab-tools/${NAME_PREFIX}${NAME_SUFFIX}:latest",
+                                "image": " ",
                                 "env": [
                                     {
                                         "name": "SPRING_PROFILES_ACTIVE",
@@ -259,8 +259,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "${NAME_PREFIX}${NAME_SUFFIX}:latest",
-                                "namespace": "csnr-devops-lab-tools"
+                                "name": "${NAME_PREFIX}${NAME_SUFFIX}:latest"
                             }
                         },
                         "type": "ImageChange"
