@@ -290,6 +290,8 @@ pipeline {
 
                         def selector=openshift.apply(models);
 
+                        echo "buildImageStreams:${buildImageStreams}"
+                        
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
                             echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - ''${buildImageStreams[imageStream.name()]}'"
@@ -298,7 +300,6 @@ pipeline {
                                 openshift.tag("${buildProjectName}/${o.metadata.name}:latest", "${o.metadata.name}:${envName}")
                             }
                         }
-
 
 
 
