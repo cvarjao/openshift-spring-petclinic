@@ -230,7 +230,7 @@ pipeline {
                        def buildProjectName="${openshift.project()}"
                        def buildImageStreams=[:];
                        openshift.selector( 'is', ['app-name':appName, 'env-name':buildEnvName]).withEach {
-                         buildImageStreams["${it.name()}"]=true;
+                         buildImageStreams["${it.object().metadata.name}"]=true;
                        }
 
                        echo "buildImageStreams:${buildImageStreams}"
@@ -298,15 +298,15 @@ pipeline {
 
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
-                            def imageStreamName="${imageStream.name()}"
+                            def imageStreamName="${o.metadata.name}"
 
                             echo "imageStreamName='${imageStreamName}'"
 
                             echo "${buildImageStreams[imageStreamName]}"
                             echo "${buildImageStreams.containsKey(imageStreamName)}"
 
-                            echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams[imageStreamName]}'"
-                            echo "Checking ImageStream 'imagestreams/${o.metadata.name}' - '${buildImageStreams['imagestreams/spring-petclinic-pr-1']}'"
+                            echo "Checking ImageStream '${imageStreamName}' - '${buildImageStreams[imageStreamName]}'"
+                            echo "Checking ImageStream '${imageStreamName}' - '${buildImageStreams['imagestreams/spring-petclinic-pr-1']}'"
                             if (buildImageStreams[imageStreamName] == true ){
                                 echo "Tagging '${buildProjectName}/${o.metadata.name}:latest' as '${o.metadata.name}:${envName}'"
                                 openshift.tag("${buildProjectName}/${o.metadata.name}:latest", "${o.metadata.name}:${envName}")
