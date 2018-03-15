@@ -74,6 +74,7 @@ pipeline {
         stage('Prepare') {
             agent any
             steps {
+              milestone(1)
               script {
                 sayHello('World')
                 killOldBuilds();
