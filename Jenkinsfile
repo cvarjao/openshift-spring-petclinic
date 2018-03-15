@@ -5,8 +5,6 @@ import jenkins.model.CauseOfInterruption.UserInterruption
 //@Library('utils') _
 //Testing GPG
 
-
-
 def appName='spring-petclinic'
 def appId=null;
 def doDeploy=false;
