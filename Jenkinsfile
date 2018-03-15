@@ -53,7 +53,7 @@ def updateContainerImages(containers, triggers) {
 }
 
 def sayHello(String who) {
-    echo "Hello ${who}!!"
+    echo "Hello ${who} . !!"
 }
 
 pipeline {
