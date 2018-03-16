@@ -137,7 +137,7 @@ pipeline {
         }
         stage('GitHub Deployment (Start)') {
             agent any
-            when { expression { return false} }
+            when { expression { return true} }
             steps {
               script {
                 def gitRepoFullName=gitRepoUrl.replace('https://github.com/', '')
