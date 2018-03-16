@@ -1,6 +1,7 @@
 
 import hudson.model.Result
 import jenkins.model.CauseOfInterruption.UserInterruption
+import org.kohsuke.github.*;
 
 //@Library('utils') _
 //Testing GPG
@@ -133,6 +134,20 @@ pipeline {
                 echo "scm.getKey():${scm.getKey()}"
               } //end script
             } // end steps
+        }
+        stage('GitHub Deployment (Start)') {
+            agent any
+            when { expression { return false} }
+            steps {
+              script {
+                def gitRepoFullName=gitRepoUrl.replace('https://github.com/', '')
+                echo "gitRepoFullName='${gitRepoFullName}'"
+                withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'githubPassword', usernameVariable: 'githubUsername')]) {
+                    def github=new GitHubBuilder().withPassword(githubUsername, githubPassword).build()
+                    println github.getMyself()
+                }
+              }
+            }
         }
         stage('Build') {
             agent any
