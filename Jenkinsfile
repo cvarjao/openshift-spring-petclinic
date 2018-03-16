@@ -133,7 +133,7 @@ pipeline {
             when { expression { return true} }
             steps {
               script {
-                ghDeployment "PREVIEW"
+                ghDeployment(gitCommitId, "PREVIEW")
               }
             }
         }
