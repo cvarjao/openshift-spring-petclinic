@@ -140,11 +140,11 @@ pipeline {
             when { expression { return true} }
             steps {
               script {
-                def gitRepoFullName=gitRepoUrl.replace('https://github.com/', '')
+                def gitRepoFullName=gitRepoUrl.replace('https://github.com/', '').replace('.git', '')
                 echo "gitRepoFullName='${gitRepoFullName}'"
                 withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'githubPassword', usernameVariable: 'githubUsername')]) {
                     def github=new GitHubBuilder().withPassword(githubUsername, githubPassword).build()
-                    println github.getMyself()
+                    println github.getRepository(gitRepoFullName)
                 }
               }
             }
