@@ -86,7 +86,6 @@ pipeline {
               //sh "git branch -a"
               //sh "git status"
               //sh "git status -sb"
-              echo "${env.dump()}"
               echo 'Building Branch: ' + env.BRANCH_NAME
               echo 'Build Number: ' + env.BUILD_NUMBER
               echo 'CHANGE_ID: ' + env.CHANGE_ID
