@@ -30,19 +30,25 @@ def updateContainerImages(containers, triggers) {
                 for ( cn in t.imageChangeParams.containerNames){
                     if (cn.equalsIgnoreCase(c.name)){
                         echo "${t.imageChangeParams.from}"
+                        def dockerImageReference = '';
                         def selector=openshift.selector("istag/${t.imageChangeParams.from.name}");
 
                         if (t.imageChangeParams.from['namespace']!=null && t.imageChangeParams.from['namespace'].length()>0){
                             openshift.withProject(t.imageChangeParams.from['namespace']) {
                                 selector=openshift.selector("istag/${t.imageChangeParams.from.name}");
+                                 if (selector.count() == 1 ){
+                                   dockerImageReference=selector.object().image.dockerImageReference
+                                }
+                            }
+                        }else{
+                            selector=openshift.selector("istag/${t.imageChangeParams.from.name}");
+                             if (selector.count() == 1 ){
+                               dockerImageReference=selector.object().image.dockerImageReference
                             }
                         }
-
-                        if (selector.count() == 1 ){
-                            c.image=selector.object().image.dockerImageReference
-                        }else{
-                            c.image = " ";
-                        }
+                      
+                        echo "ImageReference is '${dockerImageReference}'"
+                        c.image = "${dockerImageReference}";
                     }
                 }
             }
@@ -50,9 +56,13 @@ def updateContainerImages(containers, triggers) {
     }
 }
 
+
+
 def sayHello(String who) {
-    echo "Hello ${who}!!"
+    echo "Hello ${who} . !!"
 }
+
+
 
 pipeline {
     // The options directive is for configuration that applies to the whole job.
@@ -66,6 +76,7 @@ pipeline {
         stage('Prepare') {
             agent any
             steps {
+              milestone(1)
               script {
                 sayHello('World')
                 killOldBuilds();
@@ -245,10 +256,8 @@ pipeline {
                     openshift.withCredentials( 'jenkins-deployer-dev.token' ) {
                     openshift.withProject( 'csnr-devops-lab-deploy' ) {
                         def whoamiResult = openshift.raw( 'whoami' )
-                        def models = null;
+                        def models = [];
                         echo "WhoAmI:${whoamiResult.out}"
-
-                        openshift.selector( 'dc', dcSelector).scale('--replicas=0', '--timeout=2m')
 
                         //Database
                         /*
@@ -259,44 +268,35 @@ pipeline {
                         )
                         echo "The 'openshift/postgresql' template will create/update ${models.size()} objects"
                         */
-
-                        models = openshift.process(
+                      
+                        models.addAll(openshift.process(
                             'openshift//mysql-ephemeral',
                             "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
                             '-p', "MYSQL_DATABASE=petclinic"
-                        )
-
-                        for ( m in models ) {
-                            if ("DeploymentConfig".equals(m.kind)){
-                                m.spec.replicas = 0
-                                updateContainerImages(m.spec.template.spec.containers, m.spec.triggers);
-                            }
-                        }
-
-                        echo "The 'openshift/db' template will create/update ${models.size()} objects"
-                        //TODO: needs to review usage of 'apply' it recreates Secrets!!!
-                        openshift.apply(models).label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
-
-                        //Application
-                        //create or patch BCs
-                        models = openshift.process("-f", "openshift.dc.json",
+                        ));
+                        
+                        models.addAll(openshift.process("-f", "openshift.dc.json",
                                 "-p", "APP_NAME=${appName}",
                                 "-p", "ENV_NAME=${envName}",
                                 "-p", "NAME_PREFIX=${dcPrefix}",
                                 "-p", "NAME_SUFFIX=${dcSuffix}",
                                 "-p", "BC_PROJECT=${openshift.project()}",
                                 "-p", "DC_PROJECT=${openshift.project()}"
-                                )
-                        echo "The template will create/update ${models.size()} objects"
+                        ));
                         for ( m in models ) {
                             if ("DeploymentConfig".equals(m.kind)){
-                                m.spec.replicas = 0;
+                                m.spec.replicas = 0
                                 updateContainerImages(m.spec.template.spec.containers, m.spec.triggers);
                             }
                         }
-
-
+                      
+                        echo "Scaling down"
+                        openshift.selector( 'dc', dcSelector).scale('--replicas=0', '--timeout=2m')
+                      
+                        echo "The template will create/update ${models.size()} objects"
+                        //TODO: needs to review usage of 'apply' it recreates Secrets!!!
                         def selector=openshift.apply(models);
+                        selector.label(['app':"${appName}-${envName}", 'app-name':"${appName}", 'env-name':"${envName}"], "--overwrite")
 
                         selector.narrow('is').withEach { imageStream ->
                             def o=imageStream.object();
