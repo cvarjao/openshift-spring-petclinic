@@ -145,7 +145,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github-account', passwordVariable: 'githubPassword', usernameVariable: 'githubUsername')]) {
                     def github=new GitHubBuilder().withPassword(githubUsername, githubPassword).build()
                     def ghRepo=github.getRepository(gitRepoFullName);
-                    echo ghRepo.createDeployment(gitCommitId).environment("pr-${pullRequestNumber}").description("Preview deployment").create()
+                    echo ghRepo.createDeployment(gitCommitId).environment("pr-${pullRequestNumber}").description("Preview deployment").requiredContexts([]).create()
                 }
               }
             }
