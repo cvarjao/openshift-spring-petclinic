@@ -86,6 +86,7 @@ pipeline {
               //sh "git ls-remote"
               sh "git show-ref --head"
               sh "git show-ref --head --dereference"
+              sh "env"
               //sh "git branch"
               //sh "git branch -a"
               //sh "git status"
