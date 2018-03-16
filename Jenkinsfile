@@ -146,7 +146,7 @@ pipeline {
                     def github=new GitHubBuilder().withPassword(githubUsername, githubPassword).build()
                     def ghRepo=github.getRepository(gitRepoFullName);
                     def ghDeployment=ghRepo.createDeployment(gitCommitId).environment("pr-${pullRequestNumber}").description("Preview deployment").requiredContexts([]).create();
-                    ghDeployment.createStatus(GHDeploymentState.SUCCESS).create();
+                    ghDeployment.createStatus(GHDeploymentState.SUCCESS).targetUrl("http://somewhere.here.com").description("Preview deplyment2").create();
                 }
               }
             }
