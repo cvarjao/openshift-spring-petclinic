@@ -59,12 +59,6 @@ def updateContainerImages(containers, triggers) {
 
 
 
-def sayHello(String who) {
-    echo "Hello ${who} . !!"
-}
-
-
-
 pipeline {
     // The options directive is for configuration that applies to the whole job.
     options {
