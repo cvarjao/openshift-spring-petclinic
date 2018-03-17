@@ -1,6 +1,7 @@
 
 import hudson.model.Result
 import jenkins.model.CauseOfInterruption.UserInterruption
+import org.kohsuke.github.*;
 
 //@Library('utils') _
 //Testing GPG
@@ -58,12 +59,6 @@ def updateContainerImages(containers, triggers) {
 
 
 
-def sayHello(String who) {
-    echo "Hello ${who} . !!"
-}
-
-
-
 pipeline {
     // The options directive is for configuration that applies to the whole job.
     options {
@@ -86,11 +81,11 @@ pipeline {
               //sh "git ls-remote"
               sh "git show-ref --head"
               sh "git show-ref --head --dereference"
+              sh "env"
               //sh "git branch"
               //sh "git branch -a"
               //sh "git status"
               //sh "git status -sb"
-              //echo "${env}"
               echo 'Building Branch: ' + env.BRANCH_NAME
               echo 'Build Number: ' + env.BUILD_NUMBER
               echo 'CHANGE_ID: ' + env.CHANGE_ID
@@ -133,8 +128,18 @@ pipeline {
               } //end script
             } // end steps
         }
+        stage('GitHub Deployment (Start)') {
+            agent any
+            when { expression { return true} }
+            steps {
+              script {
+                ghDeployment(gitCommitId, "PREVIEW")
+              }
+            }
+        }
         stage('Build') {
             agent any
+            when { expression { return false} }
             steps {
                 script {
                     def bcPrefix=appName;
@@ -229,6 +234,7 @@ pipeline {
         } // end stage
         stage('deploy - DEV') {
             agent any
+            when { expression { return false} }
             steps {
                 echo 'Deploying'
                 script {
