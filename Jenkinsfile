@@ -237,7 +237,7 @@ pipeline {
         } // end stage
         stage('deploy - DEV') {
             agent any
-            when { expression { return false} }
+            when { expression { return true} }
             steps {
                 echo 'Deploying'
                 script {
