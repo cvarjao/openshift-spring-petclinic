@@ -18,6 +18,9 @@ def resourceBuildNameSuffix = '-dev';
 def buildEnvName = 'dev'
 def gitRepoUrl= ''
 
+
+
+
 def killOldBuilds() {
   while(currentBuild.rawBuild.getPreviousBuildInProgress() != null) {
     currentBuild.rawBuild.getPreviousBuildInProgress().doKill()
