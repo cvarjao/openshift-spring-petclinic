@@ -14,22 +14,22 @@ def bcModels(){
 
 def dcModels(){
     return {
-        /*
-        def models = [
-            ['openshift//mysql-ephemeral',
+
+        def models = []
+
+        models.add(['openshift//mysql-ephemeral',
                 "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
-                '-p', "MYSQL_DATABASE=petclinic"],
-            ["-f", "openshift.dc.json",
+                '-p', "MYSQL_DATABASE=petclinic"])
+
+        models.add(["-f", "openshift.dc.json",
                          "-p", "APP_NAME=${metadata.appName}",
                          "-p", "ENV_NAME=${envName}",
                          "-p", "NAME_PREFIX=${dcPrefix}",
                          "-p", "NAME_SUFFIX=${dcSuffix}",
                          "-p", "BC_PROJECT=${openshift.project()}",
-                         "-p", "DC_PROJECT=${openshift.project()}"]
-        ]
-        */
+                         "-p", "DC_PROJECT=${openshift.project()}"])
 
-        return ['a', 'b', 'c'];
+        return models;
     }
 }
 
