@@ -25,8 +25,8 @@ def dcModels(){
                      "-p", 'ENV_NAME=${envName}',
                      "-p", 'NAME_PREFIX=${dcPrefix}',
                      "-p", 'NAME_SUFFIX=${dcSuffix}',
-                     "-p", 'BC_PROJECT=${openshift.project()}',
-                     "-p", 'DC_PROJECT=${openshift.project()}'])
+                     "-p", 'BC_PROJECT=${buildProject}',
+                     "-p", 'DC_PROJECT=${deployProject}'])
 
     return models;
 }
