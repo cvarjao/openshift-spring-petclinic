@@ -22,7 +22,7 @@ def dcModels(){
 
     models.add(["-f", "openshift.dc.json",
                      "-p", 'APP_NAME=${metadata.appName}',
-                     "-p", 'ENV_NAME=${envName},
+                     "-p", 'ENV_NAME=${envName}',
                      "-p", 'NAME_PREFIX=${dcPrefix}',
                      "-p", 'NAME_SUFFIX=${dcSuffix}',
                      "-p", 'BC_PROJECT=${openshift.project()}',
