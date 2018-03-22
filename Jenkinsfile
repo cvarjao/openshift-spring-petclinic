@@ -12,9 +12,9 @@ def bcModels(){
     }
 }
 
-@NonCPS
 def dcModels(){
     return {
+        /*
         def models = [
             ['openshift//mysql-ephemeral',
                 "-p", "DATABASE_SERVICE_NAME=${dcPrefix}-db${dcSuffix}",
@@ -27,8 +27,9 @@ def dcModels(){
                          "-p", "BC_PROJECT=${openshift.project()}",
                          "-p", "DC_PROJECT=${openshift.project()}"]
         ]
+        */
 
-        return models;
+        return ['a', 'b', 'c'];
     }
 }
 
