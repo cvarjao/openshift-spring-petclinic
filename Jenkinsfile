@@ -1,5 +1,7 @@
 #!groovy
 
+
+
 def bcModels(){
     def models = []
         models.add(['-f', 'openshift.bc.json',
