@@ -2,6 +2,9 @@
 standardDeliveryPipeline {
     name = 'spring-petclicnic'
     bcModels = {
+        echo "owner:${owner.dump()}"
+        echo "delegate:${delegate.dump()}"
+
         return openshift.process("-f", "openshift.bc.json",
          "-p", "APP_NAME=${metadata.appName}",
          "-p", "ENV_NAME=${metadata.buildEnvName}",
