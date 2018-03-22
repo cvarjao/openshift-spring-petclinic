@@ -12,6 +12,8 @@ def bcModels(){
     }
 }
 
+
+@NonCPS
 def dcModels(){
     return {
 
